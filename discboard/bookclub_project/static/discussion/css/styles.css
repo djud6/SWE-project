@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #EEDED0;
+    margin: 0;
+    padding: 0;
+}
+
+.signup-page {
+    
+    height: 50%;
+    width: 40%;
+    margin: 5% auto;
+}
+
+.form-container h1 {
+    color: #53443F;
+}
+
+.form-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+ .form-container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align:left;
+    gap: 10px;
+    margin: 0;
+    
+}
+.logo {
+    display: block; 
+    margin: 0 auto; 
+    width: 150px;
+    padding-top: 10px;
+}
+
+.logo img {
+    width: 150px;
+    margin: 0;
+    padding: 0;
+}
+
+.form-container form label{
+    text-align: left;
+}
+.secwelcome{
+    color: #53443F;
+}
+.alreadymember{
+    font-weight:100;
+    font-size: 90%;
+    padding-bottom: 20px;
+}
+
+.alreadymember a{
+    text-decoration: none;
+    font-weight:bold;
+    color: black;
+}
+
+
+
+
+.form-container input {
+    padding: 10px;
+    width: 60%;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #D9D9D9; 
+} 
+
+.form-container button {
+    background-color: #57541D;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.form-container button:hover {
+    background-color: #494619;
+}

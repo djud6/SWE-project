@@ -1,0 +1,57 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% if is_moderator %}
+<a href="{% url 'discussion_edit' post.pk %}">Edit</a>
+<a href="{% url 'delete_post' post.pk %}">Delete</a>
+{% endif %}
+
+<!-- post_detail.html -->
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+<p>Posted by {{ post.created_by.username }} on {{ post.created_at }}</p>
+
+<hr>
+
+<h2>Comments</h2>
+<ul>
+    {% for comment in comments %}
+        <li>
+            <strong>{{ comment.created_by.username }}:</strong> {{ comment.content }}
+            <small>(Posted on {{ comment.created_at }})</small>
+        </li>
+    {% empty %}
+        <li>No comments yet. Be the first to comment!</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h2>Add a Comment</h2>
+<form method="POST" class="comment-form">
+    {% csrf_token %}
+    <div class="input-group">
+        <!-- Inline comment input styled like a search bar -->
+        {{ form.content.label_tag }}
+        {{ form.content }}
+        <button type="submit" class="btn btn-primary">Comment</button>
+    </div>
+</form>
+
+<br>
+<br>
+<form method="post" action="{% url 'upvote_post' post.pk %}">
+    {% csrf_token %}
+    <button type="submit">Upvote</button>
+</form>
+
+
+<form method="post" action="{% url 'downvote_post' post.pk %}">
+    {% csrf_token %}
+    <button type="submit">Downvote</button>
+</form>
+
+
+{% endblock %}
+

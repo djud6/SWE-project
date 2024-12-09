@@ -1,0 +1,58 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>{{ club.name }}</h1>
+<p>{{ club.description }}</p>
+
+{% if is_moderator %}
+    <a href="{% url 'club_update' club.id %}">Edit</a>
+    <a href="{% url 'club_delete' club.id %}">Delete</a>
+{% endif %}
+
+<h2>Discussions</h2>
+<ul>
+    {% for post in club.posts.all %}
+    <li>
+        <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
+        <p>Posted by {{ post.created_by.username }} on {{ post.created_at }}</p>
+        <p>{{ post.content }}</p>
+    </li>
+    {% empty %}
+    <li>No discussions available.</li>
+    {% endfor %}
+</ul>
+
+<br/>
+<hr>
+<br/>
+
+<form method="post" action="{% url 'like_club' club.id %}">
+    {% csrf_token %}
+    <button type="submit">Like</button>
+</form>
+
+<form method="post" action="{% url 'dislike_club' club.id %}">
+    {% csrf_token %}
+    <button type="submit">Dislike</button>
+</form>
+
+
+<a href="{% url 'discussion_create' club.id %}">Start a New Discussion</a>
+
+
+{% if is_member %}
+    <form method="POST" action="{% url 'leave_club' club.id %}">
+        {% csrf_token %}
+        <button type="submit">Leave Club</button>
+    </form>
+{% else %}
+    <form method="POST" action="{% url 'join_club' club.id %}">
+        {% csrf_token %}
+        <button type="submit">Join Club</button>
+    </form>
+{% endif %}
+
+
+{% endblock %}
+

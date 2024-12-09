@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        {% if profile.profile_pic %}
+        <img src="{{ profile.profile_pic.url }}" alt="{{ profile.user.username }}'s profile picture" class="profile-pic">
+        {% else %}
+        <div class="default-profile-pic">{{ profile.user.username|first|upper }}</div>
+        {% endif %}
+        <div class="profile-info">
+            <h1>{{ profile.user.fname }} {{ profile.user.lname }}</h1>
+            <p>@{{ profile.user.username }}</p>
+            <p>{{ profile.bio }}</p>
+        </div>
+    </div>
+    <div class="profile-actions">
+        <a href="{% url 'edit-profile' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'club_create' %}" class="btn btn-secondary">Create Club</a>
+    </div>
+    <div class="profile-clubs">
+        <h2>My Clubs</h2>
+        <ul>
+            {% for club in profile.user.moderated_clubs.all %}
+            <li><a href="{% url 'club_detail' club.id %}">{{ club.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <h2>Joined Clubs</h2>
+        <ul>
+            {% for club in profile.user.joined_clubs.all %}
+            <li><a href="{% url 'club_detail' club.id %}">{{ club.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

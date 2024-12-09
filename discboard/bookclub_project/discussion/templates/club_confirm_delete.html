@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+
+{% block title %}Delete Club{% endblock %}
+
+{% block content %}
+<h1>Are you sure you want to delete the club: {{ club.name }}?</h1>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete club</button>
+    <a href="{% url 'club_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

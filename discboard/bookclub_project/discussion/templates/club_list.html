@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Book Clubs</h1>
+<ul>
+    {% for club in clubs %}
+    <li>
+        <a href="{% url 'club_detail' club.id %}">{{ club.name }}</a> - 
+        {% if club.theme.all %}
+            {% for theme in club.theme.all %}
+                <a href="{% url 'theme' theme.name %}">{{ theme.name }}</a>
+                {% if not forloop.last %}, {% endif %}  <!-- Add a comma if not the last theme -->
+            {% endfor %}
+        {% else %}
+            No Theme
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'club_create' %}">Create a New Club</a>
+
+{% endblock %}

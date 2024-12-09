@@ -1,0 +1,30 @@
+<nav>
+    <a href="/">
+        <h1>OLC</h1>
+    </a>
+    <ul>
+
+    <li><a href="{% url 'club_list' %}">Home</a></li>
+    <li><a href="{% url 'club_list' %}">Clubs</a></li>
+
+    {% if user.is_authenticated %}
+
+    <li><a href="{% url 'club_create' %}">Create A Club</a></li>
+    <li><a href="{% url 'new_theme' %}">Add Theme</a></li>
+    <li><a href="{% url 'edit-profile' %}">Edit Profile</a></li>
+    <li><a href="{% url 'profile' request.user.id %}">My Profile</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+    
+    
+        
+        
+    {% else %}
+        <!-- Guest Links -->
+        <li><a href="{% url 'register' %}">Register</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        
+    {% endif %}
+        
+    </ul>
+</nav>
+<hr>

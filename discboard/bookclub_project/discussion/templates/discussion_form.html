@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+
+{% block title %}Create Discussion{% endblock %}
+
+{% block content %}
+<h1>Start a New Discussion</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Submit Discussion</button>
+</form>
+{% endblock %}

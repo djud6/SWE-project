@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Clubs by Theme</h1>
+
+{% for theme, clubs in clubs_by_theme.items %}
+    <h2>{{ theme.name }}</h2>
+    <ul>
+        {% for club in clubs %}
+            <li>
+                <a href="{% url 'club_detail' club.id %}">{{ club.name }}</a> - {{ club.description }}
+            </li>
+        {% endfor %}
+    </ul>
+{% empty %}
+    <p>No clubs found under any theme.</p>
+{% endfor %}
+
+{% endblock %}

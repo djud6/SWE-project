@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>{{ th }} Theme</h1>
+<ul>
+    {% for club in theme_posts %}
+    <li>
+        <a href="{% url 'club_detail' club.id %}">{{ club.name }}</a> - 
+        {% if club.theme.all %}
+            {{ club.theme.all|join:", " }}
+        {% else %}
+            No Theme
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'club_create' %}">Create a New Club</a>
+
+{% endblock %}
