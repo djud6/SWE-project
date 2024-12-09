@@ -1,19 +1,55 @@
-
-{% extends 'main.html' %}
+{% extends 'base2.html' %}
 
 {% block content %}
 
-<h1>Login</h1>
-<br>
-<form method="POST">
-    {% csrf_token %}
+<style>
+    .theme-preferences {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .theme-preferences h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .theme-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+    }
+    .theme-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .theme-item label {
+        margin-top: 10px;
+        text-align: center;
+    }
+</style>
 
-    {{form.as_p}}
-
-    <button type="submit">Next</button>
-</form>
-
-
-
+<div id="registration-page" class="container form-page active">
+    <div class="container">
+        <form method="post" id="theme-selection-form" class="theme-preferences">
+            {% csrf_token %}
+            <h1>Select Your Theme Preferences</h1>
+            <p>Choose at least 3 themes that interest you:</p>
+            
+            <div class="theme-grid">
+                {% for theme in themes %}
+                <div class="theme-item">
+                  <input type="checkbox" name="themes" value="{{ theme.id }}" id="theme-{{ theme.id }}">
+                  <label for="theme-{{ theme.id }}">{{ theme.name|capfirst }}</label>
+                </div>
+                {% endfor %}
+              </div>
+            
+            <button type="submit" class="btn" style="margin-top: 30px;">Next</button>
+        </form>
+    </div>
+</div>
 
 {% endblock %}

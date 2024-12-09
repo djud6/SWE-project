@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment, Club, Theme
+from .models import Post, Comment, Club, Theme, BookRecommendation
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -20,3 +20,9 @@ class ClubForm(forms.ModelForm):
     class Meta:
         model = Club
         fields = ['name', 'description','theme']
+
+class BookRecommendationForm(forms.ModelForm):
+    class Meta:
+        model = BookRecommendation
+        fields = ['title', 'goodreads_url', 'cover_image', 'description']
+

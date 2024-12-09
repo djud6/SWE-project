@@ -1,19 +1,20 @@
-
-{% extends 'main.html' %}
+{% extends 'registration.html' %}
 
 {% block content %}
-
-<h1>Login</h1>
-<br>
-<form method="POST">
-    {% csrf_token %}
-
-    {{form.as_p}}
-
-    <button type="submit">Next</button>
-</form>
-
-
-
-
+<!-- Reading Frequency Page -->
+<div id="reading-frequency-page" class="container form-page">
+    <h1>How Many Books Do You Read Annually?</h1>
+    <form id="reading-form" method="post">
+        {% csrf_token %}
+        <div class="reading-options">
+            {% for choice in form.books_per_year %}
+            <div class="reading-option">
+                {{ choice.tag }}
+                <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn">Complete Setup</button>
+    </form>
+</div>
 {% endblock %}

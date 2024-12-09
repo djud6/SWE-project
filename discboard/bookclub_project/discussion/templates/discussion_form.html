@@ -1,12 +1,31 @@
-{% extends 'main.html' %}
+{% extends 'base3.html' %}
 
-{% block title %}Create Discussion{% endblock %}
+{% block title %}Start a New Discussion{% endblock %}
 
 {% block content %}
-<h1>Start a New Discussion</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Submit Discussion</button>
-</form>
+
+<div class="container main-content">
+    <div class="form-container">
+        <h1>Start a New Discussion</h1>
+        <form method="post" enctype="multipart/form-data" class="custom-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <!-- Discussion Title -->
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+            </div>
+
+            <!-- Discussion Content -->
+            <div class="form-group">
+                {{ form.content.label_tag }}
+                {{ form.content }}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-submit">Submit Discussion</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

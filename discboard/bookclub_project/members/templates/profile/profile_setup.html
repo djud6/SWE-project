@@ -1,19 +1,44 @@
-
-{% extends 'main.html' %}
+{% extends 'registration.html' %}
 
 {% block content %}
 
-<h1>Login</h1>
-<br>
-<form method="POST">
-    {% csrf_token %}
+<!-- Profile Setup Page -->
+<div id="profile-setup-page" class="container form-page">
+    <h1>Set Up Your Profile</h1>
+    <!-- Add CSRF token for form security -->
+    <form id="profile-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="profile-picture">
+                <label for="id_profile_pic">Profile Picture</label>
+                <img id="profile-picture-preview" src="https://via.placeholder.com/150" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">
+                <!-- Render profile_pic field -->
+                {{ form.profile_pic }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="id_bio">Bio</label>
+            <!-- Render bio field -->
+            {{ form.bio }}
+        </div>
+        <div class="form-group">
+            <label for="id_goodreads_url">Goodreads Profile URL</label>
+            <!-- Render goodreads_url field -->
+            {{ form.goodreads_url }}
+        </div>
+        <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+</div>
 
-    {{form.as_p}}
-
-    <button type="submit">Next</button>
-</form>
-
-
-
+<!-- Preview the profile picture when a new file is selected -->
+<script>
+    document.getElementById('id_profile_pic').addEventListener('change', function () {
+        var file = this.files[0];
+        var preview = document.getElementById('profile-picture-preview');
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+        }
+    });
+</script>
 
 {% endblock %}

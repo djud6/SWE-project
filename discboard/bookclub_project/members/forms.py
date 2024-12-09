@@ -21,6 +21,18 @@ class ProfileSetupForm(forms.ModelForm):
         model = Profile
         fields = ['profile_pic', 'bio', 'goodreads_url']
 
+        widgets = {
+            'bio': forms.Textarea(attrs={
+                'placeholder': 'Tell us a bit about yourself',
+                'rows': 4,
+                'class': 'form-control'
+            }),
+            'goodreads_url': forms.URLInput(attrs={
+                'placeholder': 'Optional',
+                'class': 'form-control'
+            }),
+        }
+
 class ThemeSelectionForm(forms.Form):
     themes = forms.ModelMultipleChoiceField(
         queryset=Theme.objects.all(),
@@ -44,6 +56,8 @@ class UserProfileEditForm(forms.ModelForm):
     fname = forms.CharField(max_length=200, required=False, label="First Name")
     lname = forms.CharField(max_length=200, required=False, label="Last Name")
     username = forms.CharField(max_length=150, required=True, label="Username")
+    instagram = forms.URLField(required=False, label="Instagram")
+    linkedin = forms.URLField(required=False, label="LinkedIn")
 
     class Meta:
         model = Profile
@@ -76,3 +90,13 @@ class UserProfileEditForm(forms.ModelForm):
             profile.save()
 
         return profile
+    
+
+class ProfilePictureForm(forms.ModelForm):
+        profile_pic = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'accept': 'image/*', 'class': 'hidden'}))
+
+        class Meta:
+            model = Profile
+            fields = ['profile_pic']

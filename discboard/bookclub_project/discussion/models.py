@@ -37,7 +37,7 @@ class Profile(models.Model):
     null=True,
     blank=True,
     )
-    profile_pic = (models.ImageField(null=True, blank=True, upload_to="images/profile" ))
+    profile_pic = (models.ImageField(null=True, blank=True, upload_to="static/profile" ))
     goodreads_url = models.CharField(max_length=55, null=True, blank=True)
 
     def __str__(self):
@@ -82,5 +82,14 @@ class Comment(models.Model):
         return f'Comment by {self.created_by}'
     
 
-class Book(models.Model):
-    pass
+class BookRecommendation(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='recommendations')
+    recommended_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    goodreads_url = models.URLField()
+    cover_image = models.ImageField(upload_to='static/club')
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

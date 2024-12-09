@@ -2,15 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import logout, login
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from .forms import UserProfileEditForm #, CustomUserCreationForm 
 from django.contrib.auth.decorators import login_required
-from discussion.models import Profile, User
+from discussion.models import Profile, User, Theme
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView
-from .forms import RegisterForm, ProfileSetupForm, ThemeSelectionForm, BooksPerYearForm
+from .forms import RegisterForm, ProfileSetupForm, ThemeSelectionForm, BooksPerYearForm, ProfilePictureForm
 
 def register(request):
     if request.method == 'POST':
@@ -33,7 +33,7 @@ def profile_setup(request):
             return redirect('theme_selection')
     else:
         form = ProfileSetupForm()
-    return render(request, 'profile/profile_setup.html', {'form': form})
+    return render(request, 'profile/profile_setup.html', {'form': form} )
 
 def theme_selection(request):
     if request.method == 'POST':
@@ -45,7 +45,8 @@ def theme_selection(request):
             return redirect('books_per_year')
     else:
         form = ThemeSelectionForm()
-    return render(request, 'profile/theme_selection.html', {'form': form})
+        themes = Theme.objects.all()
+    return render(request, 'profile/theme_selection.html', {'form': form, 'themes': themes})
 
 def books_per_year(request):
     if request.method == 'POST':
@@ -86,8 +87,8 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
     model = Profile  # The model to update
     form_class = UserProfileEditForm  # The form to use for editing
     template_name = 'profile/edit_profile.html'
-    success_url = reverse_lazy('home')  # Redirect after successful edit
-
+    
+    
     def get_object(self):
         # Ensure the view gets the profile of the currently logged-in user
         profile, created = Profile.objects.get_or_create(user=self.request.user)
@@ -99,15 +100,35 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
         kwargs['user_instance'] = self.request.user
         return kwargs
     
+    def get_success_url(self):
+        return reverse('profile', kwargs={'user_id': self.request.user.id})
+
+    
 
 def profile_view(request, user_id):
+    if request.user.id != user_id:
+        messages.error(request, "You can only edit your own profile.")
+        return redirect('home')
+    
     profile = get_object_or_404(Profile, user__id=user_id)
     created_clubs = profile.user.moderated_clubs.all()
     joined_clubs = profile.user.joined_clubs.all()
+
+    # Handle profile picture upload
+    if request.method == 'POST':
+        form = ProfilePictureForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile picture updated successfully!")
+            return redirect('profile', user_id=user_id)
+
+    else:
+        form = ProfilePictureForm(instance=profile)
 
     context = {
         'profile': profile,
         'created_clubs': created_clubs,
         'joined_clubs': joined_clubs,
+        'profile_picture_form': form,
     }
-    return render(request, 'profile.html', context)
+    return render(request, 'profile/profile.html', context)

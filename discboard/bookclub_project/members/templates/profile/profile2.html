@@ -1,0 +1,491 @@
+
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --background: #FAF6F0;
+            --foreground: #1f2937;
+            --primary: #EEDED0;
+            --primary-foreground: #ffffff;
+            --secondary: #e5e7eb;
+            --secondary-foreground: #1f2937;
+            --accent: #60a5fa;
+            --accent-foreground: #ffffff;
+            --muted: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .profile-card {
+            margin-bottom: 2rem;
+        }
+
+        .profile-content {
+            padding: 1.5rem;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        @media (min-width: 640px) {
+            .profile-header {
+                flex-direction: row;
+                text-align: left;
+            }
+        }
+
+        .avatar {
+            position: relative;
+            width: 6rem;
+            height: 6rem;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-foreground);
+            margin-bottom: 1rem;
+        }
+
+        .avatar-upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .avatar:hover .avatar-upload-overlay {
+            opacity: 1;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (min-width: 640px) {
+            .avatar {
+                margin-right: 1.5rem;
+                margin-bottom: 0;
+            }
+        }
+
+        .profile-info h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-info p {
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-bio {
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .button-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+        }
+
+        .button-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .button-outline {
+            background-color: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--secondary);
+        }
+
+        .button-outline:hover {
+            background-color: var(--secondary);
+        }
+
+        .button-group a{
+            text-decoration: none;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.375rem;
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+            transition: background-color 0.2s;
+        }
+
+        .social-link:hover {
+            background-color: var(--accent);
+            color: var(--accent-foreground);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .club-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        .club-card {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .club-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .club-content {
+            padding: 1rem;
+        }
+
+        .club-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .club-members {
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .activity-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-foreground);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-date {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        #upload-form {
+            margin: 0;
+            padding: 0;
+        }
+
+        .upload-icon {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+        }
+
+        #upload-label {
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-tooltip {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--foreground);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .avatar:hover .upload-tooltip {
+            opacity: 1;
+        }
+
+        @media (max-width: 640px) {
+            .upload-tooltip {
+                display: none;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="card profile-card">
+            <div class="profile-content">
+                <div class="profile-header">
+                    <div class="avatar" id="avatar">
+                        {% if profile.profile_pic %}
+                            <img src="{{ profile.profile_pic.url }}" alt="{{ user.username }}'s Profile Picture" id="profile-image">
+                        {% else %}
+                            <img src="data:image/svg+xml,{{ default_avatar|urlencode }}" alt="placeholder" id="profile-image">
+                        {% endif %}
+                        {% if request.user == profile.user %}
+                            <form id="upload-form" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="avatar-upload-overlay">
+                                    <input type="file" id="id_profile_pic" name="profile_pic" accept="image/*" style="display: none;">
+                                    <label for="id_profile_pic" id="upload-label">
+                                        <svg class="upload-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                        </svg>
+                                        <span class="upload-tooltip">Upload new picture</span>
+                                    </label>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                    <div class="profile-info">
+                        <h1>{{ user.fname|capfirst }} {{ user.lname|capfirst }}</h1>
+                        <p>@{{ user.username|capfirst }}</p>
+                    </div>
+                </div>
+                <p class="profile-bio">{{profile.bio}}</p>
+                <div class="button-group">
+                    <a href="{% url 'club_create' %}" class="button button-primary">Create Club</a>
+                    <a href="{% url 'edit-profile' %}" class="button button-outline">Edit Profile</a>
+                </div>
+                <div class="social-links">
+                    <a href="{{profile.goodreads_url}}" class="social-link"><img src="" alt=""></a>
+                    <a href="#" class="social-link">I</a>
+                    <a href="#" class="social-link">L</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="joined">Joined Clubs</div>
+            <div class="tab" data-tab="created">Created Clubs</div>
+            <div class="tab" data-tab="activity">Recent Activity</div>
+        </div>
+
+        <div class="tab-content active" id="joined-clubs">
+            <div class="club-grid">
+                <div class="club-card">
+                    <img src="/placeholder.svg?height=150&width=250" alt="Science Fiction Readers" class="club-image">
+                    <div class="club-content">
+                        <h3 class="club-name">Science Fiction Readers</h3>
+                        <p class="club-members">1200 members</p>
+                        <button class="button button-outline">View Club</button>
+                    </div>
+                </div>
+                <div class="club-card">
+                    <img src="/placeholder.svg?height=150&width=250" alt="Mystery Book Club" class="club-image">
+                    <div class="club-content">
+                        <h3 class="club-name">Mystery Book Club</h3>
+                        <p class="club-members">800 members</p>
+                        <button class="button button-outline">View Club</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="created-clubs">
+            <div class="club-grid">
+                <div class="club-card">
+                    <img src="/placeholder.svg?height=150&width=250" alt="Classic Literature" class="club-image">
+                    <div class="club-content">
+                        <h3 class="club-name">Classic Literature</h3>
+                        <p class="club-members">1500 members</p>
+                        <button class="button button-outline">View Club</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="activity">
+            <div class="card">
+                <div class="profile-content">
+                    <h2>Recent Activity</h2>
+                    <p>See what John Doe has been up to lately</p>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">J</div>
+                            <div class="activity-content">
+                                <p><strong>John Doe</strong> joined the club <strong>Science Fiction Readers</strong></p>
+                                <p class="activity-date">2023-06-01</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">C</div>
+                            <div class="activity-content">
+                                <p><strong>John Doe</strong> commented on <strong>Dune</strong> in <strong>Science Fiction Readers</strong></p>
+                                <p class="activity-date">2023-06-03</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">F</div>
+                            <div class="activity-content">
+                                <p><strong>John Doe</strong> finished reading <strong>1984</strong></p>
+                                <p class="activity-date">2023-06-05</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(`${tabName}-clubs`).classList.add('active');
+                });
+            });
+
+            const fileInput = document.getElementById('id_profile_pic');
+            const uploadForm = document.getElementById('upload-form');
+            const profileImage = document.getElementById('profile-image');
+
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            profileImage.src = e.target.result;
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                        uploadForm.submit();
+                    }
+                });
+            }
+        });
+        </script>
+
+</main>
+
+
+
+{% endblock %}

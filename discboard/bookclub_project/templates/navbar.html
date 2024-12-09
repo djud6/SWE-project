@@ -1,30 +1,86 @@
-<nav>
-    <a href="/">
-        <h1>OLC</h1>
-    </a>
-    <ul>
 
-    <li><a href="{% url 'club_list' %}">Home</a></li>
-    <li><a href="{% url 'club_list' %}">Clubs</a></li>
+<nav class="header-navbar">
+    <div class="container">
 
-    {% if user.is_authenticated %}
+        <style>
 
-    <li><a href="{% url 'club_create' %}">Create A Club</a></li>
-    <li><a href="{% url 'new_theme' %}">Add Theme</a></li>
-    <li><a href="{% url 'edit-profile' %}">Edit Profile</a></li>
-    <li><a href="{% url 'profile' request.user.id %}">My Profile</a></li>
-    <li><a href="{% url 'logout' %}">Logout</a></li>
     
+
+    .logo img {
+        width: 30%;
+        height: 30%;
+    }
+        </style>
+
+        <div class="logo">
+            <a href="{% url 'home' %}" class="logo">
+                {% load static %}
+            <img src="{% static 'discussion\logo.png' %}" alt="">
+            </a>
     
-        
-        
-    {% else %}
-        <!-- Guest Links -->
-        <li><a href="{% url 'register' %}">Register</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
-        
-    {% endif %}
-        
-    </ul>
+        </div>
+
+        <div class="navbar-menu" id="navbarMenu">
+            <li><a href="{% url 'home' %}" class="active"><i class="bi bi-house"></i>Home</a></li>
+            <li><a href="{% url 'club_list' %}"><i class="bi bi-people"></i>Clubs</a></li>
+        </div>
+
+        {% if user.is_authenticated %}
+
+        <div class="user-menu">
+
+            <button class="user-menu-toggle">
+            {% with profile=user.profile %}
+            {% if profile.profile_pic %}
+            <img src="{{ profile.profile_pic.url }}" alt="User Avatar" class="user-avatar">
+            {% else %}
+            <img src="data:image/svg+xml,{{ default_avatar|urlencode }}" alt="placeholder" id="profile-image">
+            {% endif %}
+            {% endwith %}
+                <span>@{{ user.username|capfirst }}</span>
+                <i class="bi bi-chevron-down"></i>
+            </button>
+            
+            <div class="user-menu-dropdown">
+
+                <a href="{% url 'club_create' %}" class="user-menu-item">
+                    <i class="bi bi-person"></i>
+                    Create A Club
+                </a>
+
+                <a href="{% url 'new_theme' %}" class="user-menu-item">
+                    <i class="bi bi-palette"></i>
+                    Add Theme
+                </a>
+
+                <a href="{% url 'edit-profile' %}" class="user-menu-item">
+                    <i class="bi bi-person-gear"></i>
+                    Edit Profile
+                </a>
+
+                <a href="{% url 'profile' request.user.id %}" class="user-menu-item">
+                    <i class="bi bi-person"></i>
+                    My Profile
+                </a>
+
+                <a href="{% url 'logout' %}" class="user-menu-item">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Logout
+                </a>
+            </div>
+            {% else %}
+            <div class="navbar-menu" id="navbarMenu">
+                <li><a href="{% url 'register' %}"><i class="bi bi-person-plus"></i>Register</a></li>
+                <li><a href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i>Login</a></li>
+            </div>
+            
+            {% endif %}
+        </div>
+    </div>
 </nav>
-<hr>
+
+<script>
+    document.querySelector('.user-menu-toggle').addEventListener('click', function() {
+        document.querySelector('.user-menu-dropdown').classList.toggle('active');
+    });
+</script>

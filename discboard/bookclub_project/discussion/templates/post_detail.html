@@ -1,57 +1,181 @@
-{% extends 'main.html' %}
+
+{% extends 'base3.html' %}
+
+{% block title %}Discussion: {{ post.title }} - BookClub{% endblock %}
 
 {% block content %}
+<style>
+        .discussion-header {
+            margin-bottom: 30px;
+        }
+        .discussion-meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .discussion-content {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .discussion-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .comment-list {
+            display: grid;
+            gap: 20px;
+        }
+        .comment-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .comment-meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .comment-form {
+            margin-top: 30px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+   
+  
+  /* Icon styles */
+  .icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    color: var(--accent-color-2);
+  }
+  
+  .icon-button:hover {
+    background-color: var(--primary-color);
+    color: var(--accent-color-3);
+  }
+  
+  .icon-button i {
+    font-size: 1.2em;
+  }
+  
+  .voting-buttons {
+  display: flex;
+  gap: 10px;
+}
 
-{% if is_moderator %}
-<a href="{% url 'discussion_edit' post.pk %}">Edit</a>
-<a href="{% url 'delete_post' post.pk %}">Delete</a>
-{% endif %}
+.vote-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
 
-<!-- post_detail.html -->
-<h1>{{ post.title }}</h1>
-<p>{{ post.content }}</p>
-<p>Posted by {{ post.created_by.username }} on {{ post.created_at }}</p>
+.vote-button:hover {
+  color: var(--accent-color-3);
+}
 
-<hr>
+.vote-button.upvote:hover {
+  color: var(--success-color);
+}
 
-<h2>Comments</h2>
-<ul>
-    {% for comment in comments %}
-        <li>
-            <strong>{{ comment.created_by.username }}:</strong> {{ comment.content }}
-            <small>(Posted on {{ comment.created_at }})</small>
-        </li>
-    {% empty %}
-        <li>No comments yet. Be the first to comment!</li>
-    {% endfor %}
-</ul>
+.vote-button.downvote:hover {
+  color: var(--error-color);
+}
 
-<hr>
+.vote-button i {
+  font-size: 1.5rem;
+}
 
-<h2>Add a Comment</h2>
-<form method="POST" class="comment-form">
-    {% csrf_token %}
-    <div class="input-group">
-        <!-- Inline comment input styled like a search bar -->
-        {{ form.content.label_tag }}
-        {{ form.content }}
-        <button type="submit" class="btn btn-primary">Comment</button>
+  
+    </style>
+<div class="container">
+    <!-- Discussion Header -->
+    <div class="discussion-header">
+        <h1>{{ post.title }}</h1>
+        <div class="discussion-meta">
+            <p>Started by: {{ post.created_by.username }} | Posted: {{ post.created_at|timesince }} ago</p>
+        </div>
     </div>
-</form>
 
-<br>
-<br>
-<form method="post" action="{% url 'upvote_post' post.pk %}">
-    {% csrf_token %}
-    <button type="submit">Upvote</button>
-</form>
+    <!-- Discussion Content -->
+    <div class="discussion-content">
+        <p>{{ post.content }}</p>
+    </div>
 
+    <!-- Discussion Actions -->
+    <div class="discussion-actions">
+        <div>
+            {% if is_moderator %}
+            <a href="{% url 'discussion_edit' post.pk %}" class="btn">Edit</a>
+            <a href="{% url 'delete_post' post.pk %}" class="btn">Delete</a>
+            {% endif %}
+        </div>
+        <div>
+            <form method="post" action="{% url 'upvote_post' post.pk %}" style="display: inline;" class="voting-buttons">
+                {% csrf_token %}
+                       <button class="vote-button upvote">
+                        <i class="bi bi-arrow-up-circle"></i>
+                        {% if post.upvotes.count > 0 %}
+                        <span>{{ post.upvotes.count }}</span>
+                        {% endif %}
+                    </button>
+                
+            </form>
+            <form method="post" action="{% url 'downvote_post' post.pk %}" style="display: inline;" class="voting-buttons">
+                {% csrf_token %}
+                <button class="vote-button downvote">
+                    <i class="bi bi-arrow-down-circle"></i>
+                    {% if post.downvotes.count > 0 %}
+                    <span>{{ post.downvotes.count }}</span>
+                    {% endif %}
+                </button>
+            </form>
+            
+            
+        </div>
+    </div>
 
-<form method="post" action="{% url 'downvote_post' post.pk %}">
-    {% csrf_token %}
-    <button type="submit">Downvote</button>
-</form>
+    <!-- Comment List -->
+    <div class="comment-list">
+        {% for comment in comments %}
+        <div class="comment-card">
+            <div class="comment-meta">
+                <strong>{{ comment.created_by.username }}</strong> | {{ comment.created_at|timesince }} ago
+            </div>
+            <p>{{ comment.content }}</p>
+        </div>
+        {% empty %}
+        <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
 
-
+    <!-- Comment Form -->
+    <div class="comment-form">
+        <h3>Add a Comment</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.content.label_tag }}
+            {{ form.content }}
+            <button type="submit" class="btn">Comment</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
-

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Club, Post, Comment, Theme, Profile
-from .forms import PostForm, CommentForm, ClubForm
+from .forms import PostForm, CommentForm, ClubForm, BookRecommendationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
@@ -143,6 +143,23 @@ def discussion_create(request, club_id):  # Matches <int:club_id>
     else:
         form = PostForm()
     return render(request, 'discussion_form.html', {'form': form})
+
+
+@login_required
+def add_recommendation(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    if request.method == 'POST':
+        form = BookRecommendationForm(request.POST, request.FILES)
+        if form.is_valid():
+            recommendation = form.save(commit=False)
+            recommendation.club = club
+            recommendation.recommended_by = request.user
+            recommendation.save()
+            return redirect('club_detail', club_id=club.id)
+    else:
+        form = BookRecommendationForm()
+    return render(request, 'add_recommendation.html', {'form': form, 'club': club})
+
 
 
 @login_required

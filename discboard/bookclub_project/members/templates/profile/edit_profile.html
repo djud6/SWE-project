@@ -1,12 +1,78 @@
-
-{% extends 'main.html' %}
+{% extends 'base3.html' %}
 
 {% block content %}
+<div class="container main-content">
+    <div class="form-container">
+        <h2>Edit Profile</h2>
+        <form method="post" enctype="multipart/form-data" class="custom-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
 
-<h2>Edit Profile</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-  </form>
+            <!-- Profile Picture Upload -->
+            <div class="form-group">
+                <label for="id_profile_pic">Profile Picture:</label>
+                {{ form.profile_pic }}
+                {% if user.profile.profile_pic %}
+                <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" id="profile-preview" style="max-width: 150px; margin-top: 10px;">
+                {% else %}
+                <img src="https://via.placeholder.com/150" alt="Profile Placeholder" id="profile-preview" style="max-width: 150px; margin-top: 10px;">
+                {% endif %}
+            </div>
+
+            <!-- First Name -->
+            <div class="form-group">
+                {{ form.fname.label_tag }}
+                {{ form.fname }}
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                {{ form.lname.label_tag }}
+                {{ form.lname }}
+            </div>
+
+            <!-- Username -->
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+
+            <!-- Bio -->
+            <div class="form-group">
+                {{ form.bio.label_tag }}
+                {{ form.bio }}
+            </div>
+
+            <!-- Goodreads URL -->
+            <div class="form-group">
+                {{ form.goodreads_url.label_tag }}
+                {{ form.goodreads_url }}
+            </div>
+
+            <!-- Instagram -->
+            <div class="form-group">
+                {{ form.instagram.label_tag }}
+                {{ form.instagram }}
+            </div>
+
+            <!-- LinkedIn -->
+            <div class="form-group">
+                {{ form.linkedin.label_tag }}
+                {{ form.linkedin }}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+<script>
+  document.getElementById('id_profile_pic').addEventListener('change', function () {
+      var file = this.files[0];
+      var preview = document.getElementById('profile-preview');
+      if (file) {
+          preview.src = URL.createObjectURL(file);
+      }
+  });
+</script>
 {% endblock %}

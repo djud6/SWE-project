@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookClub - Modern Sidebar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles2.css">
+</head>
+<body>
+        <style>
+            :root {
+  --primary-color: #EEDED0;
+  --primary-dark: #D6C4A9;
+  --secondary-color: #F7E7CE;
+  --accent-color-1: #B6A48E;
+  --accent-color-2: #8B7355;
+  --accent-color-3: #C17817;
+  --text-color: #2C1810;
+  --text-light: #5C4033;
+  --background-color: #FAF6F0;
+  --white: #FFFFFF;
+  --error-color: #E85D75;
+  --success-color: #4CAF50;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: var(--white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-collapsed {
+  width: 80px;
+}
+
+.sidebar-header {
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--accent-color-2);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.sidebar-collapsed .logo-text {
+  display: none;
+}
+
+.sidebar-nav {
+  flex-grow: 1;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover, .nav-item.active {
+  background-color: var(--primary-color);
+  color: var(--accent-color-3);
+  border-left-color: var(--accent-color-3);
+}
+
+.nav-item i {
+  font-size: 20px;
+  width: 24px;
+  margin-right: 16px;
+}
+
+.sidebar-collapsed .nav-item span {
+  display: none;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid var(--primary-color);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sidebar-collapsed .user-info {
+  display: none;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.user-status {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.toggle-sidebar {
+  background: none;
+  border: none;
+  color: var(--accent-color-2);
+  cursor: pointer;
+  font-size: 20px;
+  padding: 4px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-collapsed .toggle-sidebar {
+  transform: rotate(180deg);
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 40px;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content-expanded {
+  margin-left: 80px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+
+        </style>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="logo">
+                <img src="https://via.placeholder.com/32" alt="BookClub Logo" class="logo-icon">
+                <span class="logo-text">BookClub</span>
+            </a>
+            <button class="toggle-sidebar" id="toggleSidebar">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <i class="bi bi-house-door"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-compass"></i>
+                <span>Explore</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-bookshelf"></i>
+                <span>My Library</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-people"></i>
+                <span>Book Clubs</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-chat-dots"></i>
+                <span>Discussions</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-journal-text"></i>
+                <span>Reading List</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-graph-up"></i>
+                <span>Reading Stats</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-bell"></i>
+                <span>Notifications</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/40" alt="User Avatar" class="user-avatar">
+                <div class="user-info">
+                    <div class="user-name">Jane Doe</div>
+                    <div class="user-status">Book Enthusiast</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-collapsed');
+            mainContent.classList.toggle('main-content-expanded');
+        });
+    </script>
+</body>
+</html>
+

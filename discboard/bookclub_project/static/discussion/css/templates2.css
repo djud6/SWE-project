@@ -1,0 +1,198 @@
+:root {
+  --primary-color: #EEDED0;
+  --primary-dark: #D6C4A9;
+  --secondary-color: #F7E7CE;
+  --accent-color-1: #B6A48E;
+  --accent-color-2: #8B7355;
+  --accent-color-3: #C17817;
+  --text-color: #2C1810;
+  --text-light: #5C4033;
+  --background-color: #FAF6F0;
+  --white: #FFFFFF;
+  --error-color: #E85D75;
+  --success-color: #4CAF50;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Navbar styles */
+.navbar {
+  background-color: var(--white);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color-2);
+  text-decoration: none;
+}
+
+.navbar-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-menu a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-menu a:hover {
+  color: var(--accent-color-3);
+}
+
+/* Main content layout */
+.main-content {
+  display: flex;
+  margin-top: 20px;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-section {
+  margin-bottom: 30px;
+}
+
+.sidebar-section h3 {
+  color: var(--accent-color-2);
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 10px;
+}
+
+.sidebar-menu a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.sidebar-menu a:hover {
+  color: var(--accent-color-3);
+}
+
+/* Book recommendations styles */
+.book-recommendation {
+  background-color: var(--primary-color);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.book-recommendation h4 {
+  margin: 0 0 5px 0;
+  color: var(--accent-color-2);
+}
+
+.book-recommendation p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+/* Members styles */
+.member-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.member-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  color: var(--accent-color-2);
+  font-weight: bold;
+}
+
+/* Content area styles */
+.content-area {
+  flex-grow: 1;
+  padding: 0 20px;
+}
+
+.content-section {
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.content-section h2 {
+  color: var(--accent-color-2);
+  margin-bottom: 15px;
+}
+
+/* Button styles */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--accent-color-2);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: var(--accent-color-3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .content-area {
+    padding: 0;
+  }
+}
