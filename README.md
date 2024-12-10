@@ -48,6 +48,9 @@ pip install --upgrade pip
 pip install django
 ```
 
+# Install pillow
+python -m pip install Pillow
+
 ### Step 4: Create a Superuser
 
 Set up an admin user to access the Django admin panel:
