@@ -11,7 +11,8 @@ The Online Literary Club (OLC) is a platform that connects book enthusiasts, ena
 - Git
 - Django
 
-## DOWNLOAD THE PROJECT DEMO VIDEO IF IT'S TOO BIG TO E VIEWED ON HERE, THE PROJECT REOPRT IS IN THE DISCBOARD/DEMO VIDEO AND PROJECT REPORT FOLDER.
+## DOWNLOAD THE PROJECT DEMO VIDEO IF IT'S TOO BIG TO BE VIEWED ON HERE, THE PROJECT REOPRT IS IN THE DISCBOARD/DEMO VIDEO AND PROJECT REPORT FOLDER.
+## LINK: [https://github.com/djud6/SWE-project/tree/main/discboard/demo%20video%20and%20project%20report)
 
 ## Setup Instructions
 
@@ -90,7 +91,7 @@ myenv\Scripts\activate
 
 ### Dependency Installation
 
-Ensure djanogo is installed in the virtualenv:
+Ensure django is installed in the virtualenv:
 pip i django
 
 If you encounter issues installing dependencies:
