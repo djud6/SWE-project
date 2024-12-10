@@ -11,6 +11,8 @@ The Online Literary Club (OLC) is a platform that connects book enthusiasts, ena
 - Git
 - Django
 
+## DOWNLOAD THE PROJECT DEMO VIDEO IF IT'S TOO BIG TO E VIEWED ON HERE, THE PROJECT REOPRT IS IN THE DISCBOARD/DEMO VIDEO AND PROJECT REPORT FOLDER.
+
 ## Setup Instructions
 
 ### Step 1: Clone the Repository
@@ -106,4 +108,6 @@ pip install -r requirements.txt  # If you have a requirements file
 - Always work within the activated virtual environment
 - Keep your Django installation up to date
 - Refer to Django documentation for advanced configuration
+
+
 
