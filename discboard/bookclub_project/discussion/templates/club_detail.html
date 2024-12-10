@@ -1,58 +1,466 @@
-{% extends 'main.html' %}
+{% extends 'base3.html' %}
+{% load static %}
 
 {% block content %}
+<style>
+    :root {
+        --primary-color: #EEDED0;
+        --primary-dark: #D6C4A9;
+        --secondary-color: #F7E7CE;
+        --accent-color-1: #B6A48E;
+        --accent-color-2: #8B7355;
+        --accent-color-3: #C17817;
+        --text-color: #2C1810;
+        --text-light: #5C4033;
+        --background-color: #FAF6F0;
+        --white: #FFFFFF;
+        --error-color: #E85D75;
+        --success-color: #4CAF50;
+    }
 
-<h1>{{ club.name }}</h1>
-<p>{{ club.description }}</p>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
 
-{% if is_moderator %}
-    <a href="{% url 'club_update' club.id %}">Edit</a>
-    <a href="{% url 'club_delete' club.id %}">Delete</a>
-{% endif %}
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
 
-<h2>Discussions</h2>
-<ul>
-    {% for post in club.posts.all %}
-    <li>
-        <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
-        <p>Posted by {{ post.created_by.username }} on {{ post.created_at }}</p>
-        <p>{{ post.content }}</p>
-    </li>
-    {% empty %}
-    <li>No discussions available.</li>
-    {% endfor %}
-</ul>
+    .navbar {
+        background-color: var(--white);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+    }
 
-<br/>
-<hr>
-<br/>
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-<form method="post" action="{% url 'like_club' club.id %}">
-    {% csrf_token %}
-    <button type="submit">Like</button>
-</form>
+    .navbar-logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--accent-color-2);
+        text-decoration: none;
+    }
 
-<form method="post" action="{% url 'dislike_club' club.id %}">
-    {% csrf_token %}
-    <button type="submit">Dislike</button>
-</form>
+    .navbar-menu {
+        display: flex;
+        gap: 20px;
+    }
 
+    .navbar-menu a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
 
-<a href="{% url 'discussion_create' club.id %}">Start a New Discussion</a>
+    .navbar-menu a:hover {
+        color: var(--accent-color-3);
+    }
 
+    .main-content {
+        display: flex;
+        margin-top: 20px;
+    }
 
-{% if is_member %}
-    <form method="POST" action="{% url 'leave_club' club.id %}">
-        {% csrf_token %}
-        <button type="submit">Leave Club</button>
-    </form>
-{% else %}
-    <form method="POST" action="{% url 'join_club' club.id %}">
-        {% csrf_token %}
-        <button type="submit">Join Club</button>
-    </form>
-{% endif %}
+    .sidebar {
+        width: 250px;
+        background-color: var(--white);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
+    .sidebar-section {
+        margin-bottom: 30px;
+    }
+
+    .sidebar-section h3 {
+        color: var(--accent-color-2);
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .sidebar-menu {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar-menu a {
+        color: var(--text-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .sidebar-menu a:hover {
+        color: var(--accent-color-3);
+    }
+
+    .book-recommendation {
+        background-color: var(--primary-color);
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .book-recommendation h4 {
+        margin: 0 0 5px 0;
+        color: var(--accent-color-2);
+    }
+
+    .book-recommendation p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+
+    .member-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .member-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        color: var(--accent-color-2);
+        font-weight: bold;
+    }
+
+    .content-area {
+        flex-grow: 1;
+        padding: 0 20px;
+    }
+
+    .content-section {
+        background-color: var(--white);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .content-section h2 {
+        color: var(--accent-color-2);
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: var(--accent-color-2);
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: var(--accent-color-3);
+    }
+
+    .discussion-list {
+        display: grid;
+        gap: 20px;
+    }
+
+    .discussion-card {
+        background-color: var(--primary-color);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .discussion-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .discussion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+
+    .discussion-header h3 {
+        margin: 0;
+        color: var(--accent-color-2);
+    }
+
+    .discussion-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .discussion-content {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .discussion-footer {
+        display: flex;
+        gap: 15px;
+    }
+
+    .vote-button, .icon-button {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .vote-button:hover, .icon-button:hover {
+        color: var(--accent-color-3);
+    }
+
+    .upvote:hover {
+        color: var(--success-color);
+    }
+
+    .downvote:hover {
+        color: var(--error-color);
+    }
+
+    .current-book {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .book-cover {
+        width: 200px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-info {
+        flex-grow: 1;
+    }
+
+    .book-info h3 {
+        color: var(--accent-color-2);
+        margin-bottom: 10px;
+    }
+
+    .event-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .event-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    .event-list li:last-child {
+        border-bottom: none;
+    }
+
+    .event-date {
+        font-weight: bold;
+        color: var(--accent-color-2);
+    }
+
+    .event-time {
+        color: var(--text-light);
+    }
+
+    .footer {
+        background-color: var(--primary-dark);
+        color: var(--text-color);
+        text-align: center;
+        padding: 20px 0;
+        margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .content-area {
+            padding: 0;
+        }
+
+        .current-book {
+            flex-direction: column;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: auto;
+            max-width: 200px;
+            margin: 0 auto 20px;
+        }
+    }
+
+    .discussion-list a{
+        text-decoration: none;
+        color: black;
+    }
+</style>
+
+<div class="container main-content">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <h3>Quick Links</h3>
+            <ul class="sidebar-menu">
+                <li><a href="{% url 'add_recommendation' club.id %}">Give Recommendation</a></li>
+                <li><a href="{% url 'discussion_create' club.id %}">Start Discussion</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Book Recommendations</h3>
+            {% if club.recommendation.exists %}
+                {% for recommendation in club.recommendation.all|slice:":2" %}
+                <div class="book-recommendation">
+                    <h4>{{ recommendation.title|capfirst }}</h4>
+                    <p>by {{ recommendation.recommended_by.username|capfirst }}</p>
+                </div>
+                {% endfor %}
+                <a href="{% url 'view_recommendations' club.id %}" class="btn">View All</a>
+            {% else %}
+                <p>No recommendations available.</p>
+            {% endif %}
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Members</h3>
+            {% if club.members.exists %}
+                {% for member in club.members.all|slice:":3" %}
+                <div class="member-item">
+                    <div class="member-avatar">{{ member.username|capfirst|slice:":2" }}</div>
+                    <span>{{ member.username|capfirst }}</span>
+                </div>
+                {% endfor %}
+                <a href="{% url 'view_members' club.id %}" class="btn">View All Members</a>
+            {% else %}
+                <p>No members found.</p>
+            {% endif %}
+        </div>
+        
+    </aside>
+
+    <main class="content-area">
+        <section class="content-section hero">
+            <h1>{{ club.name }}</h1>
+            <p>{{ club.description }}</p>
+            {% if is_moderator %}
+            <a href="{% url 'club_update' club.id %}" class="btn">Edit</a>
+            <a href="{% url 'club_delete' club.id %}" class="btn">Delete</a>
+            {% endif %}
+            
+            {% if not is_moderator  %}
+
+            {% if is_member  %}
+            <form method="POST" action="{% url 'leave_club' club.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Leave Club</button>
+            </form>
+            {% else %}
+            <form method="POST" action="{% url 'join_club' club.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Join Club</button>
+            </form>
+            {% endif %}
+            {% endif %}
+
+        </section>
+
+        <section class="content-section">
+            <h2>Current Book Discussion</h2>
+            {% if club.book_discussions.exists %}
+            {% for discussion in club.book_discussions.all|slice:":1" %}
+            <div class="current-book">
+                {% if discussion.book_cover %}
+                <img src="{{ discussion.book_cover.url }}" alt="{{ discussion.book_title }}" class="book-cover">
+                {% else %}
+                <img src="{% static 'default_book_cover.png' %}" alt="{{ discussion.book_title }}" class="book-cover">
+                {% endif %}
+                <div class="book-info">
+                    <h3>{{ discussion.book_title }}</h3>
+                    <p>{{ discussion.discussion_description }}</p>
+                    <a href="{% url 'book_discussion_detail' discussion.id %}" class="btn">Join Discussion</a>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <a href="{% url 'create_book_discussion' club.id %}" class="btn">Create Book Discussion</a>
+            {% endif %}
+        </section>
+
+        <section class="content-section">
+            <h2>User Posts</h2>
+            <div class="discussion-list">
+                {% for post in club.posts.all %}
+                <a href="{% url 'post_detail' post.id %}">
+                <div class="discussion-card">
+                    <div class="discussion-header">
+                        <h3>{{ post.title }}</h3>
+                        <div class="discussion-meta">
+                            <span>{{ post.created_by.username }}</span>
+                            <span>{{ post.created_at|date:"F j, Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="discussion-content">
+                        <p>{{ post.content }}</p>
+                    </div>
+                </div>
+            </a>
+                {% empty %}
+                <p>No posts available.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</div>
 
 {% endblock %}
-

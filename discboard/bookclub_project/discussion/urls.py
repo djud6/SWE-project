@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import AddThemeView
+from .views import AddThemeView, AddRecommendation
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -29,4 +29,17 @@ urlpatterns = [
 
     path('clubs/join/<int:pk>/', views.join_club, name='join_club'),
     path('clubs/leave/<int:pk>/', views.leave_club, name='leave_club'),
+
+    path('clubs/<int:club_id>/recommendations/add/', views.AddRecommendation.as_view(), name='add_recommendation'),
+    path('clubs/<int:club_id>/recommendations/', views.view_recommendations, name='view_recommendations'),
+    path('clubs/<int:club_id>/members/', views.view_members, name='view_members'),
+
+    
+    # Book Discussion URLs
+    path('club/<int:club_id>/book-discussion/create/', views.create_book_discussion, name='create_book_discussion'),
+    path('book-discussion/<int:book_discussion_id>/', views.book_discussion_detail, name='book_discussion_detail'),
+    path('book-discussion/<int:book_discussion_id>/edit/', views.edit_book_discussion, name='edit_book_discussion'),
+    path('book-discussion/<int:book_discussion_id>/delete/', views.delete_book_discussion, name='delete_book_discussion'),
+    path('profile/<int:member_id>/', views.member_profile, name='member_profile'),  # Other members' profiles
+
 ]

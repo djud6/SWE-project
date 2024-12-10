@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment, Club, Theme, BookRecommendation
+from .models import Post, Comment, Club, Theme, BookRecommendation, BookDiscussion
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -25,4 +25,12 @@ class BookRecommendationForm(forms.ModelForm):
     class Meta:
         model = BookRecommendation
         fields = ['title', 'goodreads_url', 'cover_image', 'description']
+    
+    # Explicitly set `goodreads_url` as not required
+    goodreads_url = forms.CharField(required=False)
 
+# Add this to forms.py
+class BookDiscussionForm(forms.ModelForm):
+    class Meta:
+        model = BookDiscussion
+        fields = ['book_title', 'book_cover', 'goodreads_url', 'discussion_title', 'discussion_description']

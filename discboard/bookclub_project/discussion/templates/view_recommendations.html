@@ -1,0 +1,178 @@
+{% extends 'base3.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #EEDED0;
+        --primary-dark: #D6C4A9;
+        --secondary-color: #F7E7CE;
+        --accent-color-1: #B6A48E;
+        --accent-color-2: #8B7355;
+        --accent-color-3: #C17817;
+        --text-color: #2C1810;
+        --text-light: #5C4033;
+        --background-color: #FAF6F0;
+        --white: #FFFFFF;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--text-color);
+        margin-bottom: 40px;
+    }
+
+    .book-recommendations {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .book-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .recommender {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        color: var(--accent-color-2);
+        font-weight: bold;
+    }
+
+    .recommender-name {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .book-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: var(--text-color);
+    }
+
+    .book-club {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+
+    .book-content {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .book-image {
+        width: 100px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .book-description {
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+
+    .book-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .goodreads-link {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        background-color: var(--white);
+        color: var(--accent-color-2);
+        text-decoration: none;
+        border: 1px solid var(--accent-color-2);
+        border-radius: 4px;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .goodreads-link:hover {
+        background-color: var(--primary-color);
+    }
+
+    .goodreads-link svg {
+        margin-left: 5px;
+    }
+
+    .recommendation-date {
+        color: var(--text-light);
+        font-size: 0.8rem;
+    }
+</style>
+
+
+<div class="container">
+    <h1>Book Recommendations</h1>
+    <div class="book-recommendations">
+        {% for recommendation in recommendations %}
+        <div class="book-card">
+            <div class="recommender">
+                <div class="avatar">{{ recommendation.recommended_by.username|slice:":2"|upper }}</div>
+                <span class="recommender-name">
+                    Recommended by {{ recommendation.recommended_by.username }}
+                </span>
+            </div>
+            <h2 class="book-title">{{ recommendation.title }}</h2>
+            <p class="book-club">For {{ recommendation.club.name }}</p>
+            <div class="book-content">
+                <img src="{{ recommendation.cover_image.url }}" alt="{{ recommendation.title }} book cover" class="book-image">
+                <p class="book-description">{{ recommendation.description|truncatewords:30 }}</p>
+            </div>
+            <div class="book-footer">
+                <a href="{{ recommendation.goodreads_url }}" class="goodreads-link" target="_blank">
+                    View on Goodreads
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </a>
+                <span class="recommendation-date">
+                    {{ recommendation.created_at|date:"F j, Y" }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    
+    </div>
+</div>
+
+
+{% endblock %}
+

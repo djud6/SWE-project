@@ -1,0 +1,234 @@
+{% extends 'base3.html' %}
+
+{% block content %}
+
+    <style>
+        :root {
+            --primary-color: #EEDED0;
+            --primary-dark: #D6C4A9;
+            --secondary-color: #F7E7CE;
+            --accent-color-1: #B6A48E;
+            --accent-color-2: #8B7355;
+            --accent-color-3: #C17817;
+            --text-color: #2C1810;
+            --text-light: #5C4033;
+            --background-color: #FAF6F0;
+            --white: #FFFFFF;
+            --error-color: #E85D75;
+            --success-color: #4CAF50;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .gradient-header {
+            background: linear-gradient(to right, var(--accent-color-2), var(--accent-color-3));
+            color: var(--white);
+            padding: 20px;
+        }
+
+        .gradient-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .gradient-header p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .book-details {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .book-cover img {
+            max-width: 200px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-description {
+            flex: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--accent-color-2);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color-3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent-color-2);
+            color: var(--accent-color-2);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent-color-2);
+            color: var(--white);
+        }
+
+        .theme-section {
+            margin-top: 40px;
+        }
+
+        .theme-section h2 {
+            color: var(--accent-color-2);
+            border-bottom: 2px solid var(--accent-color-1);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comment-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .comment-meta {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .comment-form {
+            margin-top: 40px;
+        }
+
+        .comment-form h3 {
+            color: var(--accent-color-2);
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--accent-color-1);
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .book-details {
+                flex-direction: column;
+            }
+
+            .book-cover img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="card">
+            <div class="gradient-header">
+                <h1>{{ book_discussion.book_title }}</h1>
+                {% if is_moderator %}
+                
+                {% endif %}
+                <p>Recommended by: {{ book_discussion.created_by.username|capfirst }} | Posted: {{ book_discussion.created_at|date:"F j, Y" }}</p>
+            </div>
+
+            
+
+            <div class="card-content">
+                <div class="btn-group">
+                    <a href="{% url 'edit_book_discussion' book_discussion.id %}" class="btn">Edit</a>
+                    <form method="POST" action="{% url 'delete_book_discussion' book_discussion.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn">Delete</button>
+                    </form>
+                </div>
+                <div class="book-details">
+                    <div class="book-cover">
+                        <img src="{{ book_discussion.book_cover.url }}" alt="{{ book_discussion.book_title }}">
+                    </div>
+                    <div class="book-description">
+                        <p>
+                            {{ book_discussion.discussion_description }}
+                        </p>
+                        {% if book_discussion.goodreads_url %}
+                        <a href="{{ book_discussion.goodreads_url }}" class="btn btn-outline"><i class="bi bi-book"></i> View on Goodreads</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="theme-section">
+            <h2>Comments</h2>
+            <div class="comment-list">
+                {% for comment in book_discussion.comments.all %}
+                <div class="card">
+                    <div class="card-content">
+                        <div class="comment-meta">
+                            <strong>{{ comment.created_by.username|capfirst }}</strong> | {{ comment.created_at|timesince }} ago
+                        </div>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No comments yet. Be the first to share your thoughts!</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="comment-form">
+            <h3>Add a Comment</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="content">Your comment:</label>
+                <textarea id="content" name="content" required></textarea>
+                <button type="submit" class="btn">Comment</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle user menu dropdown
+        document.querySelector('.user-menu-toggle').addEventListener('click', function() {
+            document.querySelector('.user-menu-dropdown').classList.toggle('active');
+        });
+    </script>
+
+{% endblock %}

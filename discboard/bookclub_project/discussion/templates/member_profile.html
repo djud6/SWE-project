@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    :root {
+        --primary-color: #EEDED0;
+        --primary-dark: #D6C4A9;
+        --secondary-color: #F7E7CE;
+        --accent-color-1: #B6A48E;
+        --accent-color-2: #8B7355;
+        --accent-color-3: #C17817;
+        --text-color: #2C1810;
+        --text-light: #5C4033;
+        --background-color: #FAF6F0;
+        --white: #FFFFFF;
+        --error-color: #E85D75;
+        --success-color: #4CAF50;
+        --gradient-start: #EEDED0;
+        --gradient-end: #D6C4A9;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.5;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .card {
+        background-color: var(--white);
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .profile-card {
+        margin-bottom: 2rem;
+    }
+
+    .profile-content {
+        padding: 1.5rem;
+    }
+
+    .profile-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    @media (min-width: 640px) {
+        .profile-header {
+            flex-direction: row;
+            text-align: left;
+        }
+    }
+
+    .avatar {
+        position: relative;
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 1rem;
+    }
+
+    .avatar-upload-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    .avatar:hover .avatar-upload-overlay {
+        opacity: 1;
+    }
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media (min-width: 640px) {
+        .avatar {
+            margin-right: 1.5rem;
+            margin-bottom: 0;
+        }
+    }
+
+    .profile-info h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+        color: var(--accent-color-2);
+    }
+
+    .profile-info p {
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-bio {
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: background-color 0.2s, color 0.2s;
+        text-decoration: none;
+    }
+
+    .button-primary {
+        background-color: var(--accent-color-2);
+        color: var(--white);
+        border: none;
+    }
+
+    .button-primary:hover {
+        background-color: var(--accent-color-3);
+    }
+
+    .button-outline {
+        background-color: transparent;
+        color: var(--accent-color-2);
+        border: 1px solid var(--accent-color-2);
+    }
+
+    .button-outline:hover {
+        background-color: var(--accent-color-2);
+        color: var(--white);
+    }
+
+    .social-links {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .social-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.375rem;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        transition: background-color 0.2s;
+    }
+
+    .social-link:hover {
+        background-color: var(--accent-color-1);
+        color: var(--white);
+    }
+
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .tab {
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        color: var(--text-light);
+    }
+
+    .tab.active {
+        border-bottom-color: var(--accent-color-2);
+        color: var(--accent-color-2);
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .club-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .club-card {
+        background-color: var(--white);
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .club-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .club-content {
+        padding: 1rem;
+    }
+
+    .club-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--accent-color-2);
+    }
+
+    .club-members {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .activity-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        background-color: var(--accent-color-1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-date {
+        font-size: 0.75rem;
+        color: var(--text-light);
+    }
+
+    #upload-form {
+        margin: 0;
+        padding: 0;
+    }
+
+    .upload-icon {
+        width: 24px;
+        height: 24px;
+        fill: white;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+    }
+
+    #upload-label {
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .upload-tooltip {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--text-color);
+        color: var(--white);
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+    }
+
+    .avatar:hover .upload-tooltip {
+        opacity: 1;
+    }
+
+    @media (max-width: 640px) {
+        .upload-tooltip {
+            display: none;
+        }
+    }
+</style>
+
+    <div class="container">
+        <div class="card profile-card">
+            <div class="profile-content">
+                <div class="profile-header">
+                    <div class="avatar" id="avatar">
+                        {% if member.profile_pic %}
+                            <img src="{{ member.profile_pic.url }}" alt="{{ user.username }}'s Profile Picture" id="profile-image">
+                        {% else %}
+                            <img src="data:image/svg+xml,{{ default_avatar|urlencode }}" alt="placeholder" id="profile-image">
+                        {% endif %}
+                        {% if request.user == member.user %}
+                            <form id="upload-form" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="avatar-upload-overlay">
+                                    <input type="file" id="id_profile_pic" name="profile_pic" accept="image/*" style="display: none;">
+                                    <label for="id_profile_pic" id="upload-label">
+                                        <svg class="upload-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                        </svg>
+                                        <span class="upload-tooltip">Upload new picture</span>
+                                    </label>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                    <div class="profile-info">
+                        <h1>{{ user.fname|capfirst }} {{ user.lname|capfirst }}</h1>
+                        <p>@{{ user.username|capfirst }}</p>
+                    </div>
+                </div>
+                <p class="profile-bio">{{member.bio}}</p>
+                <div class="button-group">
+                    {% if request.user == member.user %}
+                    <a href="{% url 'club_create' %}" class="button button-primary">Create Club</a>
+                    <a href="{% url 'edit-profile' %}" class="button button-outline">Edit Profile</a>
+                    {% endif %}
+                </div>
+                <div class="social-links">
+                    <a href="{{profile.goodreads_url}}" class="social-link" aria-label="Goodreads"><i class="bi bi-book"></i></a>
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="joined">Joined Clubs</div>
+            <div class="tab" data-tab="created">Created Clubs</div>
+        </div>
+
+        
+        <div class="tab-content active" id="joined-clubs">
+            {% if joined_clubs %}
+            <div class="club-grid">
+                {% for club in joined_clubs %}
+                <div class="club-card">
+                    <div class="club-content">
+                        <h3 class="club-name">{{ club.name }}</h3>
+                        <p class="club-members">{{ club.members.count }} members</p>
+                        <a href="{% url 'club_detail' club.id %}" class="button button-outline">View Club</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No clubs joined yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="tab-content" id="created-clubs">
+            {% if created_clubs %}
+            <div class="club-grid">
+                {% for club in created_clubs %}
+                <div class="club-card">
+                    <div class="club-content">
+                        <h3 class="club-name">{{ club.name }}</h3>
+                        <p class="club-members">{{ club.members.count }} members</p>
+                        <a href="{% url 'club_detail' club.id %}" class="button button-outline">View Club</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No clubs created yet.</p>
+            {% endif %}
+        </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(`${tabName}-clubs`).classList.add('active');
+                });
+            });
+
+            const fileInput = document.getElementById('id_profile_pic');
+            const uploadForm = document.getElementById('upload-form');
+            const profileImage = document.getElementById('profile-image');
+
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            profileImage.src = e.target.result;
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                        uploadForm.submit();
+                    }
+                });
+            }
+        });
+        </script>
+
+</main>
+
+
+
+{% endblock %}
+

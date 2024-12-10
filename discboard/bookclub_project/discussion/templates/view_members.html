@@ -1,0 +1,158 @@
+{% extends 'base3.html' %}
+
+{% block content %}
+
+<style>
+    :root {
+        --primary-color: #EEDED0;
+        --primary-dark: #D6C4A9;
+        --secondary-color: #F7E7CE;
+        --accent-color-1: #B6A48E;
+        --accent-color-2: #8B7355;
+        --accent-color-3: #C17817;
+        --text-color: #2C1810;
+        --text-light: #5C4033;
+        --background-color: #FAF6F0;
+        --white: #FFFFFF;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    h1 {
+        color: var(--accent-color-2);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .members-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .member-card {
+        background-color: var(--white);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .member-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .member-card a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .member-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .member-info {
+        padding: 1.5rem;
+    }
+
+    .member-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--accent-color-2);
+        margin-bottom: 0.5rem;
+    }
+
+    .member-role {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+    }
+
+    .member-bio {
+        font-size: 0.9rem;
+        color: var(--text-color);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+        }
+
+        .members-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .member-image {
+            height: 200px;
+        }
+
+        .member-info {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <header>
+        <h1>Our Club Members</h1>
+        <p class="subtitle">Meet the amazing individuals who make our club special</p>
+    </header>
+    <main class="members-grid">
+
+        {% for member in members %}
+        <div class="member-card">
+            <a href="{% url 'member_profile' member.id %}">
+                <img src="{{ member.profile.profile_pic.url }}" alt="{{ member.username }}" class="member-image">
+                <div class="member-info">
+                    <h2 class="member-name">{{ member.fname }} {{ member.lname }}</h2>
+                    <p class="member-role">{{ member.profile.bio|truncatewords:10 }}</p>
+                    <p class="member-bio">{{ member.profile.goodreads_url }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        
+    </main>
+</div>
+
+{% endblock %}

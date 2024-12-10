@@ -382,41 +382,44 @@
         <div class="tabs">
             <div class="tab active" data-tab="joined">Joined Clubs</div>
             <div class="tab" data-tab="created">Created Clubs</div>
-            <div class="tab" data-tab="activity">Recent Activity</div>
+            <div class="tab" data-tab="activity">Bookmarks</div>
         </div>
 
         <div class="tab-content active" id="joined-clubs">
+            {% if joined_clubs %}
             <div class="club-grid">
+                {% for club in joined_clubs %}
                 <div class="club-card">
-                    <img src="/placeholder.svg?height=150&width=250" alt="Science Fiction Readers" class="club-image">
                     <div class="club-content">
-                        <h3 class="club-name">Science Fiction Readers</h3>
-                        <p class="club-members">1200 members</p>
-                        <button class="button button-outline">View Club</button>
+                        <h3 class="club-name">{{ club.name }}</h3>
+                        <p class="club-members">{{ club.members.count }} members</p>
+                        <a href="{% url 'club_detail' club.id %}" class="button button-outline">View Club</a>
                     </div>
                 </div>
-                <div class="club-card">
-                    <img src="/placeholder.svg?height=150&width=250" alt="Mystery Book Club" class="club-image">
-                    <div class="club-content">
-                        <h3 class="club-name">Mystery Book Club</h3>
-                        <p class="club-members">800 members</p>
-                        <button class="button button-outline">View Club</button>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
+            {% else %}
+            <p>No clubs joined yet.</p>
+            {% endif %}
         </div>
 
         <div class="tab-content" id="created-clubs">
+            {% if created_clubs %}
             <div class="club-grid">
+                {% for club in created_clubs %}
                 <div class="club-card">
-                    <img src="/placeholder.svg?height=150&width=250" alt="Classic Literature" class="club-image">
                     <div class="club-content">
-                        <h3 class="club-name">Classic Literature</h3>
-                        <p class="club-members">1500 members</p>
-                        <button class="button button-outline">View Club</button>
+                        <h3 class="club-name">{{ club.name }}</h3>
+                        <p class="club-members">{{ club.members.count }} members</p>
+                        <a href="{% url 'club_detail' club.id %}" class="button button-outline">View Club</a>
                     </div>
                 </div>
+                {% endfor %}
             </div>
+            {% else %}
+            <p>No clubs created yet.</p>
+            {% endif %}
+        </div>
         </div>
 
         <div class="tab-content" id="activity">

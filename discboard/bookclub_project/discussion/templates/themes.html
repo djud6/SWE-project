@@ -1,20 +1,20 @@
-{% extends 'main.html' %}
+{% extends 'base3.html' %}
 
 {% block content %}
+<div class="themes-header">
+    <h1>Clubs with {{th}} theme</h1>
+</div>
 
-<h1>{{ th }} Theme</h1>
-<ul>
+<div class="themes-grid">
     {% for club in theme_posts %}
-    <li>
-        <a href="{% url 'club_detail' club.id %}">{{ club.name }}</a> - 
-        {% if club.theme.all %}
-            {{ club.theme.all|join:", " }}
-        {% else %}
-            No Theme
-        {% endif %}
-    </li>
+    <div class="theme-card">
+        <h2>{{ club.name }}</h2>
+        <div class="theme-clubs">
+            <a href="{% url 'club_detail' club.id %}" class="club-link">{{ club.name }}</a>
+        </div>
+    </div>
     {% endfor %}
-</ul>
-<a href="{% url 'club_create' %}">Create a New Club</a>
+</div>
 
+<a href="{% url 'club_create' %}" class="btn">Create a New Club</a>
 {% endblock %}

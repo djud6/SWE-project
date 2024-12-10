@@ -42,6 +42,17 @@ class Profile(models.Model):
 
     def __str__(self):
         return str(self.user)
+    
+class BookRecommendation(models.Model):
+    recommended_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    goodreads_url = models.CharField(max_length=200, null=True, blank=True)
+    cover_image = models.ImageField(upload_to='static/club')
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Club(models.Model):
@@ -53,6 +64,7 @@ class Club(models.Model):
     members = models.ManyToManyField(User, related_name="joined_clubs", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     theme = models.ManyToManyField(Theme, related_name="club_theme")
+    recommendation = models.ManyToManyField(BookRecommendation, related_name="club_rec", blank=True)
     likes = models.ManyToManyField(User, related_name="post_likes", blank=True)
     dislikes = models.ManyToManyField(User, related_name="post_dislikes", blank=True)
 
@@ -71,25 +83,30 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+# Add this to models.py
+class BookDiscussion(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='book_discussions')
+    book_title = models.CharField(max_length=200)
+    book_cover = models.ImageField(upload_to='static/clubs', null=True, blank=True)
+    goodreads_url = models.CharField(max_length=200, null=True, blank=True)
+    discussion_title = models.CharField(max_length=200)
+    discussion_description = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.book_title} - {self.discussion_title}"
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    book_discussion = models.ForeignKey(BookDiscussion, on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
     content = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Comment by {self.created_by}'
-    
 
-class BookRecommendation(models.Model):
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='recommendations')
-    recommended_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    goodreads_url = models.URLField()
-    cover_image = models.ImageField(upload_to='static/club')
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.title
+

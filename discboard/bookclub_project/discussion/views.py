@@ -1,18 +1,39 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Club, Post, Comment, Theme, Profile
-from .forms import PostForm, CommentForm, ClubForm, BookRecommendationForm
+from .models import Club, Post, Comment, Theme, Profile, BookDiscussion, User, BookRecommendation
+from .forms import PostForm, CommentForm, ClubForm, BookRecommendationForm, BookDiscussionForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.generic import CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import capfirst
+from django.db.models import Q, Count
+
 
 def home(request):
-    return render(request, 'home.html')
+    # Get all themes
+    themes = Theme.objects.all()
+    
+    # Create a dictionary of clubs by theme
+    clubs_by_theme = {}
+    for theme in themes:
+        clubs = Club.objects.filter(theme=theme)
+        if clubs.exists():  # Only include themes with at least one club
+            clubs_by_theme[theme] = clubs
+    
+    return render(request, 'home.html', {'clubs_by_theme': clubs_by_theme})
+
+
 
 def club_list(request):
-    clubs = Club.objects.all()
-    return render(request, 'club_list.html', {'clubs': clubs})
+    search_query = request.GET.get('q', '')  # Get search query from request
+    if search_query:
+        clubs = Club.objects.filter(
+            Q(name__icontains=search_query) | 
+            Q(description__icontains=search_query)
+        ).distinct()  # Search by name, description, or theme
+    else:
+        clubs = Club.objects.all()
+    return render(request, 'club_list.html', {'clubs': clubs, 'search_query': search_query})
 
 def post_list(request):
     clubs = Club.posts.all()
@@ -66,6 +87,11 @@ def is_post_moderator(user, club_id):
     """Check if the user is the moderator of the club"""
     post = get_object_or_404(Post, id=club_id)
     return user == post.created_by
+
+def is_Bookpost_moderator(user, book_discussion_id):
+    book_discussion = get_object_or_404(BookDiscussion, id=book_discussion_id)
+    return user == book_discussion.created_by or user == book_discussion.club.moderator
+
 
 
 class AddThemeView(LoginRequiredMixin, CreateView):
@@ -145,20 +171,40 @@ def discussion_create(request, club_id):  # Matches <int:club_id>
     return render(request, 'discussion_form.html', {'form': form})
 
 
-@login_required
-def add_recommendation(request, club_id):
+
+class AddRecommendation(LoginRequiredMixin, CreateView):
+    model = BookRecommendation
+    template_name = 'add_recommendation.html'
+    form_class = BookRecommendationForm  # Ensure the form class is used
+
+    def form_valid(self, form):
+        form.instance.recommended_by = self.request.user  # Set the current user
+        club_id = self.kwargs.get('club_id')
+        club = get_object_or_404(Club, id=club_id)
+        form.instance.title = capfirst(form.instance.title)  # Capitalize the title
+        self.object = form.save()
+        club.recommendation.add(self.object)  # Add the recommendation to the club
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect to the specific club detail page
+        return reverse('club_detail', kwargs={'club_id': self.kwargs['club_id']})
+
+
+
+
+
+def view_recommendations(request, club_id):
     club = get_object_or_404(Club, id=club_id)
-    if request.method == 'POST':
-        form = BookRecommendationForm(request.POST, request.FILES)
-        if form.is_valid():
-            recommendation = form.save(commit=False)
-            recommendation.club = club
-            recommendation.recommended_by = request.user
-            recommendation.save()
-            return redirect('club_detail', club_id=club.id)
-    else:
-        form = BookRecommendationForm()
-    return render(request, 'add_recommendation.html', {'form': form, 'club': club})
+    recommendations = club.recommendation.all()  # Fetch recommendations linked to this club
+    return render(request, 'view_recommendations.html', {'club': club, 'recommendations': recommendations})
+
+
+def view_members(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    members = club.members.all()
+    return render(request, 'view_members.html', {'club': club, 'members': members})
+
 
 
 
@@ -313,3 +359,92 @@ def leave_club(request, pk):
     return redirect('club_detail', club_id=club.id)
 
 
+# Add these views to views.py
+@login_required
+def create_book_discussion(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    
+    # Only moderator can create book discussions
+    if request.user != club.moderator:
+        return redirect('club_detail', club_id=club.id)
+    
+    if request.method == 'POST':
+        form = BookDiscussionForm(request.POST, request.FILES)
+        if form.is_valid():
+            book_discussion = form.save(commit=False)
+            book_discussion.club = club
+            book_discussion.created_by = request.user
+            book_discussion.save()
+            return redirect('book_discussion_detail', book_discussion_id=book_discussion.id)
+    else:
+        form = BookDiscussionForm()
+    
+    return render(request, 'create_book_discussion.html', {
+        'form': form, 
+        'club': club
+    })
+
+def book_discussion_detail(request, book_discussion_id):
+    is_moderator = is_Bookpost_moderator(request.user.id, book_discussion_id)
+    book_discussion = get_object_or_404(BookDiscussion, id=book_discussion_id)
+
+    
+    # Handle comment submission
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = book_discussion  # This requires updating the Comment model
+            comment.created_by = request.user
+            comment.save()
+            return redirect('book_discussion_detail', book_discussion_id=book_discussion.id)
+    else:
+        form = CommentForm()
+    
+    context = {
+        'book_discussion': book_discussion,
+        'comments': book_discussion.comments.all(),
+        'form': form,
+        'is_moderator': is_moderator,
+    }
+    
+    return render(request, 'book_discussion_detail.html', context)
+
+
+@login_required
+def edit_book_discussion(request, book_discussion_id):
+    book_discussion = get_object_or_404(BookDiscussion, id=book_discussion_id)
+    if request.user != book_discussion.club.moderator:
+        return redirect('book_discussion_detail', book_discussion_id=book_discussion.id)
+    if request.method == 'POST':
+        form = BookDiscussionForm(request.POST, request.FILES, instance=book_discussion)
+        if form.is_valid():
+            form.save()
+            return redirect('book_discussion_detail', book_discussion_id=book_discussion.id)
+    else:
+        form = BookDiscussionForm(instance=book_discussion)
+    return render(request, 'create_book_discussion.html', {'form': form, 'book_discussion': book_discussion, 'editing': True})
+
+
+@login_required
+def delete_book_discussion(request, book_discussion_id):
+    book_discussion = get_object_or_404(BookDiscussion, id=book_discussion_id)
+    if request.user != book_discussion.club.moderator:
+        return redirect('club_detail', club_id=book_discussion.club.id)
+    if request.method == 'POST':
+        book_discussion.delete()
+        return redirect('club_detail', club_id=book_discussion.club.id)
+    return render(request, 'book_discussion_confirm_delete.html', {'book_discussion': book_discussion})
+
+def member_profile(request, member_id):
+    member = get_object_or_404(Profile, user__id=member_id)
+    created_clubs = member.user.moderated_clubs.all()
+    joined_clubs = member.user.joined_clubs.all()
+
+    context = {
+        'member': member,
+        'created_clubs': created_clubs,
+        'joined_clubs': joined_clubs,
+    }
+
+    return render(request, 'member_profile.html', context)

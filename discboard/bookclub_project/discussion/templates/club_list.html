@@ -56,20 +56,36 @@
         text-decoration: none;
         color: black;
     }
+
+    .bookmark-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.2em;
+        color: var(--accent-color-2);
+        cursor: pointer;
+    }
+    .bookmark-icon:hover {
+        color: var(--accent-color-3);
+    }
+    .club-card {
+        position: relative;
+    }
 </style>
 
 
 <div class="container">
     <div class="club-header">
         <h1>Book Clubs</h1>
+        <form method="GET" action="{% url 'club_list' %}">
         <div class="search-bar">
-            <input type="text" placeholder="Search for clubs...">
-            <button class="btn">Search</button>
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Search for clubs...">
+            <button class="btn" type="submit">Search</button>
         </div>
-        <a href="#" class="btn">Create Club</a>
+        </form>
+        <a href="{% url 'club_create' %}" class="btn">Create Club</a>
     </div>
     <div class="club-grid">
-
         {% for club in clubs %}
         <div class="club-card">
             <a href="{% url 'club_detail' club.id %}"><h3>{{ club.name|capfirst }}</h3></a>
@@ -84,38 +100,6 @@
         </div>
         {% endfor %}
 
-
-
-        <div class="club-card">
-            <h3>Mystery Lovers</h3>
-            <span class="club-theme">Mystery</span>
-            <p>Dive into thrilling whodunits and page-turning suspense novels. Join us for weekly discussions on the latest mystery bestsellers.</p>
-        </div>
-        <div class="club-card">
-            <h3>Sci-Fi Explorers</h3>
-            <span class="club-theme">Science Fiction</span>
-            <p>Embark on interstellar adventures and explore futuristic worlds. We discuss classic and contemporary sci-fi literature.</p>
-        </div>
-        <div class="club-card">
-            <h3>Historical Fiction Fans</h3>
-            <span class="club-theme">Historical Fiction</span>
-            <p>Travel through time with captivating stories set in different eras. Discover hidden gems and discuss historical accuracy in fiction.</p>
-        </div>
-        <div class="club-card">
-            <h3>Contemporary Literature</h3>
-            <span class="club-theme">Contemporary</span>
-            <p>Explore thought-provoking modern novels and their societal impact. Join lively debates on current literary trends.</p>
-        </div>
-        <div class="club-card">
-            <h3>Fantasy Realms</h3>
-            <span class="club-theme">Fantasy</span>
-            <p>Immerse yourself in magical worlds and epic quests. From high fantasy to urban fantasy, we cover it all.</p>
-        </div>
-        <div class="club-card">
-            <h3>Non-Fiction Explorers</h3>
-            <span class="club-theme">Non-Fiction</span>
-            <p>Expand your knowledge with fascinating true stories and informative books. We cover a wide range of non-fiction topics.</p>
-        </div>
     </div>
 </div>
 
