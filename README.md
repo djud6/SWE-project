@@ -1,5 +1,8 @@
 # Online Literary Club (OLC)
 
+## DOWNLOAD THE PROJECT DEMO VIDEO IF IT'S TOO BIG TO BE VIEWED ON HERE, THE PROJECT REOPRT IS IN THE DISCBOARD/DEMO VIDEO AND PROJECT REPORT FOLDER.
+## LINK: [https://github.com/djud6/SWE-project/tree/main/discboard/demo%20video%20and%20project%20report)
+
 ## Project Overview
 
 The Online Literary Club (OLC) is a platform that connects book enthusiasts, enabling them to join themed book clubs, engage in discussions, and share recommendations.
@@ -11,8 +14,6 @@ The Online Literary Club (OLC) is a platform that connects book enthusiasts, ena
 - Git
 - Django
 
-## DOWNLOAD THE PROJECT DEMO VIDEO IF IT'S TOO BIG TO BE VIEWED ON HERE, THE PROJECT REOPRT IS IN THE DISCBOARD/DEMO VIDEO AND PROJECT REPORT FOLDER.
-## LINK: [https://github.com/djud6/SWE-project/tree/main/discboard/demo%20video%20and%20project%20report)
 
 ## Setup Instructions
 
