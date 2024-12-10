@@ -46,10 +46,11 @@ pip install --upgrade pip
 
 # Install Django
 pip install django
+
+# Install pillow
+python -m pip install Pillow
 ```
 
-Install pillow
-python -m pip install Pillow
 
 ### Step 4: Create a Superuser
 
