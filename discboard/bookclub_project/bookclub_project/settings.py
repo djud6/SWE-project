@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'discussion.apps.DiscussionConfig',
     'members.apps.MembersConfig',
-    'widget_tweaks',
 ]
 
 AUTH_USER_MODEL = 'discussion.User'
